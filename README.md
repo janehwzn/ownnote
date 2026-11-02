@@ -113,7 +113,11 @@ updated, pages **you've edited in OwnNote are never overwritten**, and pages you
 ```bash
 python3 notion_zip.py ~/Downloads/Export-xxxx.zip   # option 1
 python3 backup.py                                  # option 2 (asks for the secret)
+python3 backup.py --save-web-images                # save web-hosted covers/images so everything works offline
 ```
+
+Imports through your account save web-hosted images, covers and icons locally automatically. The last command does the same
+for notes you imported with an older version.
 </details>
 
 ## ⌨️ Keyboard shortcuts

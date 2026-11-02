@@ -5,6 +5,9 @@ Usage:
     NOTION_TOKEN=ntn_xxx python3 backup.py        # or put the token in ./token.txt
 
 Re-running is incremental: pages whose last_edited_time hasn't changed are skipped.
+
+    python3 backup.py --save-web-images   # download images/covers that still point to websites
+    python3 backup.py --index-only        # rebuild the sidebar/search index from data/
 """
 import json
 import mimetypes
@@ -134,7 +137,8 @@ def download_file(url, owner_id):
         dest = dest_dir / f"{stem}-{i}{ext}"
         i += 1
     try:
-        with urllib.request.urlopen(url, timeout=120) as r:
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (OwnNote; +https://github.com/janehwzn/ownnote)"})
+        with urllib.request.urlopen(req, timeout=120) as r:
             body = r.read()
         if not os.path.splitext(name)[1]:
             ext = mimetypes.guess_extension(r.headers.get_content_type() or "") or ""
@@ -146,12 +150,27 @@ def download_file(url, owner_id):
         return None
 
 
-def localize(obj, owner_id):
-    """Replace Notion-hosted file URLs inside a file object with local paths."""
-    if isinstance(obj, dict) and obj.get("type") == "file" and isinstance(obj.get("file"), dict):
+NOTION_WEB = "https://www.notion.so"
+
+
+def localize(obj, owner_id, web=False):
+    """Save files locally: Notion-hosted ones always (their URLs expire after an hour),
+    and with web=True also images hosted elsewhere, so pages work fully offline.
+    The original address is kept next to the local copy."""
+    if not isinstance(obj, dict):
+        return obj
+    if obj.get("type") == "file" and isinstance(obj.get("file"), dict) and not obj["file"].get("local"):
         local = download_file(obj["file"]["url"], owner_id)
         if local:
             obj["file"]["local"] = local
+    elif web and obj.get("type") == "external" and isinstance(obj.get("external"), dict):
+        url = obj["external"].get("url") or ""
+        full = NOTION_WEB + url if url.startswith("/") else url  # Notion's built-in covers/icons
+        if full.startswith(("http://", "https://")):
+            local = download_file(full, owner_id)
+            if local:
+                obj.clear()
+                obj.update({"type": "file", "file": {"url": full, "local": local}, "external_url": url})
     return obj
 
 
@@ -159,7 +178,7 @@ def localize_page_meta(page):
     pid = page["id"]
     for key in ("icon", "cover"):
         if page.get(key):
-            localize(page[key], pid)
+            localize(page[key], pid, web=True)
     for prop in page.get("properties", {}).values():
         if prop.get("type") == "files":
             for f in prop["files"]:
@@ -173,7 +192,7 @@ def fetch_blocks(block_id, owner_id, depth=0):
     for b in paginate("GET", f"/blocks/{block_id}/children"):
         t = b["type"]
         if t in FILE_BLOCKS:
-            localize(b[t], owner_id)
+            localize(b[t], owner_id, web=(t == "image"))
         if t == "callout" and b[t].get("icon"):
             localize(b[t]["icon"], owner_id)
         if b.get("has_children") and t not in CHILD_ENTITY_BLOCKS and depth < 30:
@@ -350,6 +369,44 @@ def write_index(pages, dbs, owners, order, search):
     save_json(DATA / "search.json", search)
 
 
+def localize_existing():
+    """Download web-hosted images, covers and icons of pages already on disk (no Notion token needed)."""
+    def walk(blocks, owner):
+        n = 0
+        for b in blocks:
+            v = b.get(b["type"])
+            if b["type"] == "image" and isinstance(v, dict) and v.get("type") == "external":
+                localize(v, owner, web=True)
+                n += v.get("type") == "file"
+            n += walk(b.get("children", []), owner)
+        return n
+
+    total = 0
+    for f in sorted(PAGES.glob("*.json")):
+        d = load_json(f)
+        if not d:
+            continue
+        before = json.dumps(d, sort_keys=True)
+        n = walk(d.get("blocks", []), d["page"]["id"])
+        localize_page_meta(d["page"])
+        if json.dumps(d, sort_keys=True) != before:
+            save_json(f, d)
+            total += 1
+            print(f"  saved images for: {page_title(d['page']) or 'Untitled'}", flush=True)
+    for f in sorted(DBS.glob("*.json")):
+        d = load_json(f)
+        if not d:
+            continue
+        before = json.dumps(d, sort_keys=True)
+        localize_page_meta(d["database"])
+        if json.dumps(d, sort_keys=True) != before:
+            save_json(f, d)
+            total += 1
+            print(f"  saved images for: {db_title(d['database']) or 'Untitled database'}", flush=True)
+    rebuild_from_disk()
+    print(f"Done. Updated {total} pages/databases; everything now works offline.")
+
+
 def rebuild_from_disk():
     """Rebuild the viewer index from whatever is already in data/ (no network)."""
     pages, dbs, search, owners, order = [], [], {}, {}, {}
@@ -384,6 +441,8 @@ if __name__ == "__main__":
     try:
         if "--index-only" in sys.argv:
             rebuild_from_disk()
+        elif "--save-web-images" in sys.argv:
+            localize_existing()
         else:
             main()
     except KeyboardInterrupt:

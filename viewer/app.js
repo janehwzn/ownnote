@@ -45,6 +45,7 @@ function iconHTML(icon, fallback = "") {
   if (icon.type === "emoji") return esc(icon.emoji);
   let src = icon.src || fileUrl(icon);
   if (src && src.startsWith("/images/")) src = "https://www.notion.so" + src;  // Notion's built-in template icons
+  else if (src && !/^(https?:|\/|data:)/.test(src)) src = "/data/" + src.split("/").map(encodeURIComponent).join("/");  // saved locally
   return src ? `<img src="${esc(src)}" alt="">` : fallback;
 }
 
