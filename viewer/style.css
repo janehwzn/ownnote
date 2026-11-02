@@ -294,3 +294,8 @@ a.nl-subpage .label { border-bottom: 1px solid var(--line); }
 .done-big { font-size: 40px; }
 .modal .err { color: var(--red); margin: 12px 0 0; }
 @media (max-width: 760px) { .choices { grid-template-columns: 1fr; } .modal { padding: 22px 18px; } }
+.star-ask { margin: 18px auto 0; max-width: 420px; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+.star-ask a { color: var(--accent); font-weight: 500; }
+
+/* the [hidden] attribute must win over display rules like .choices { display: grid } */
+[hidden] { display: none !important; }

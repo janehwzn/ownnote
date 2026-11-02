@@ -126,7 +126,10 @@
         <p><b>Imported ${plural(r.pages, "page")}${r.databases ? ` and ${plural(r.databases, "database")}` : ""}.</b></p>
         ${r.skipped_edited ? `<p class="muted">Kept ${plural(r.skipped_edited, "page")} you'd edited in OwnNote as they are.</p>` : ""}
         ${r.skipped_existing ? `<p class="muted">Kept ${plural(r.skipped_existing, "page")} already imported from your Notion account (that copy has more detail).</p>` : ""}
-        <button class="btn primary open-pages">Open my pages</button>`;
+        <button class="btn primary open-pages">Open my pages</button>
+        ${askForStar() ? `<p class="star-ask">If OwnNote saved you a subscription, a
+          <a href="https://github.com/janehwzn/ownnote" target="_blank" rel="noopener">⭐ on GitHub</a>
+          helps other people find it. Thank you!</p>` : ""}`;
       m.querySelector(".open-pages").onclick = () => location.reload();
     }
 
@@ -135,6 +138,17 @@
       m.querySelector(".resync").hidden = !s.has_token;
       if (s.running) { showProgress(s.message || "Working…"); poll(); }
     }).catch(() => {});
+  }
+
+  // Ask once, ever: right after a successful import, never as a pop-up.
+  function askForStar() {
+    try {
+      if (localStorage.getItem("ownnote:star-asked")) return false;
+      localStorage.setItem("ownnote:star-asked", "1");
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   function plural(n, word) {
