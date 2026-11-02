@@ -517,10 +517,27 @@ function crumbs(id) {
   let cur = id, guard = 0;
   while (cur && items[cur] && guard++ < 50) { chain.unshift(cur); cur = items[cur].parent; }
   $("#crumb-path").innerHTML = chain.map((c) => `<a href="#/${c}">${items[c].icon ? iconHTML(items[c].icon) + " " : ""}${esc(items[c].title)}</a>`).join(" / ");
-  document.title = (items[id]?.title || "Ownote") + " · Ownote";
+  document.title = (items[id]?.title || "OwnNote") + " · OwnNote";
+}
+
+function rememberPage(id) {
+  try { localStorage.setItem("ownnote:last", id); } catch { /* storage unavailable */ }
+}
+
+function startPage() {
+  let last = null;
+  try { last = localStorage.getItem("ownnote:last"); } catch { /* storage unavailable */ }
+  if (last && items[last]) return last;
+  const pages = Object.values(items).filter((i) => i.kind === "page");
+  pages.sort((a, b) => (b.edited || "").localeCompare(a.edited || ""));
+  return pages[0]?.id;
 }
 
 async function route() {
+  if (!location.hash) {
+    const start = startPage();
+    if (start) { history.replaceState(null, "", "#/" + start); }
+  }
   const [, raw, hit] = location.hash.match(/^#\/([^?]+)(?:\?q=(.*))?/) || [];
   if (current?.editor) {
     await current.editor.flush();
@@ -536,6 +553,7 @@ async function route() {
   if (!id || !items[id]) return showHome();
   crumbs(id);
   markActive(id);
+  rememberPage(id);
   $("#main").scrollTop = 0;
   try {
     if (items[id].kind === "database") await showDatabase(id);
@@ -547,7 +565,7 @@ async function route() {
 
 function showHome() {
   $("#crumb-path").innerHTML = "";
-  document.title = "Ownote";
+  document.title = "OwnNote";
   $("#content").classList.remove("wide");
   applyFormat({});
   const recent = Object.values(items).filter((i) => i.kind === "page").sort((a, b) => (b.edited || "").localeCompare(a.edited || "")).slice(0, 25);

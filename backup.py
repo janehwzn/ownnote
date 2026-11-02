@@ -24,8 +24,8 @@ ROOT = Path(__file__).resolve().parent
 
 
 def data_dir():
-    """Where notes live: $OWNOTE_DATA, else the path in data-location.txt, else ./data."""
-    env = os.environ.get("OWNOTE_DATA", "").strip()
+    """Where notes live: $OWNNOTE_DATA, else the path in data-location.txt, else ./data."""
+    env = os.environ.get("OWNNOTE_DATA", "").strip()
     if env:
         return Path(env).expanduser().resolve()
     loc = ROOT / "data-location.txt"

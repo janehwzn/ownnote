@@ -1,6 +1,6 @@
 # Your notes and secrets: never commit these
-data/
-data-*/
+/data/
+/data-*/
 token.txt
 
 # Generated

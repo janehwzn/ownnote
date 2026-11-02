@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📝 Ownote
+# 📝 OwnNote
 
 ### Your own Notion-style workspace. Free forever, offline, and on your computer.
 
@@ -13,22 +13,23 @@ No account. No cloud. No lock-in. Just a folder of your notes.
 ![Works offline](https://img.shields.io/badge/works-offline-purple.svg)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#-contributing)
 
-[Quick start](#-quick-start) · [Import from Notion](#-bring-your-notion-workspace) · [Features](#-features) · [FAQ](#-faq)
+[Quick start](#-quick-start) · [Import from Notion](#-bring-your-notion-workspace) · [Features](#-features) · [FAQ](#-faq)<br>
+**English** · [简体中文](README.zh-CN.md)
 
 <br>
 
-<img src="docs/screenshots/hero.png" alt="Ownote editing a travel plan page with a table, to-dos and a toggle" width="900">
+<img src="docs/demo.gif" alt="OwnNote demo: creating a page, adding headings, bullets, to-dos and a callout, changing font size and color, picking an emoji icon, and searching" width="900">
 
 </div>
 
 ---
 
-## 💡 Why Ownote?
+## 💡 Why OwnNote?
 
 Notion is wonderful, but if you mostly use it as a **personal notebook**, you end up paying a monthly
 subscription to read your own notes, on someone else's server, behind a login.
 
-**Ownote is the personal-notebook part of Notion, running on your own computer:**
+**OwnNote is the personal-notebook part of Notion, running on your own computer:**
 
 - 🆓 **Free forever.** No plans, no seat limits, no upgrade prompts.
 - 🔒 **Private by default.** Your notes never leave your machine. No telemetry, no account.
@@ -66,18 +67,19 @@ subscription to read your own notes, on someone else's server, behind a login.
 You need **Python 3.8+**, which comes with macOS. Nothing else to install.
 
 ```bash
-git clone https://github.com/janehwzn/ownote.git
-cd ownote
+git clone https://github.com/janehwzn/ownnote.git
+cd ownnote
 python3 serve.py
 ```
 
-Your browser opens at **http://localhost:8765**. Click **＋ New page** and start writing.
+Your browser opens at **http://localhost:8765** with a welcome page and a few example pages to play with.
+Click **＋ New page** and start writing.
 
-> **On a Mac?** Just double-click **`Open Ownote.command`** in Finder.
+> **On a Mac?** Just double-click **`Open OwnNote.command`** in Finder.
 
 ## 🚚 Bring your Notion workspace
 
-Ownote imports through Notion's official API, which is free on every Notion plan, including Free.
+OwnNote imports through Notion's official API, which is free on every Notion plan, including Free.
 It takes about 5 minutes to set up:
 
 1. Go to **[notion.so/profile/integrations](https://www.notion.so/profile/integrations)** → **New integration**.
@@ -95,7 +97,7 @@ Everything lands in `data/`: pages, subpages, databases, images and attachments.
 interrupted, run it again and it picks up where it stopped.
 
 **Re-importing is safe.** It only fetches pages that changed in Notion. It **never overwrites pages you've
-edited in Ownote**, and it never brings back pages you deleted.
+edited in OwnNote**, and it never brings back pages you deleted.
 
 ## ⌨️ Keyboard shortcuts
 
@@ -112,7 +114,7 @@ edited in Ownote**, and it never brings back pages you deleted.
 ## 🗃️ Where your data lives
 
 ```
-ownote/
+ownnote/
 ├── data/                  ← all your notes (back this folder up!)
 │   ├── pages/<id>.json    ← one file per page
 │   ├── databases/         ← imported Notion databases
@@ -122,19 +124,20 @@ ownote/
 ├── serve.py               ← the local app server (Python standard library only)
 ├── backup.py              ← the Notion importer (Python standard library only)
 ├── viewer/                ← the web app
+├── starter/               ← welcome page and examples shown on first run
 └── editor/                ← editor source (BlockNote + React)
 ```
 
 ### Keep your notes in a separate folder (recommended)
 
-By default notes go in `ownote/data/`. To keep them apart from the app (for example in iCloud Drive or a
+By default notes go in `ownnote/data/`. To keep them apart from the app (for example in iCloud Drive or a
 backup folder), put the folder path in a file called `data-location.txt` next to `serve.py`:
 
 ```bash
 echo "$HOME/Documents/My Notes/data" > data-location.txt
 ```
 
-You can also set the `OWNOTE_DATA` environment variable. Your Notion token is then kept next to that folder
+You can also set the `OWNNOTE_DATA` environment variable. Your Notion token is then kept next to that folder
 (`My Notes/token.txt`), never inside the app folder, and never served by the app.
 
 Pages are stored in **Notion's own block JSON format**, so your data stays readable, scriptable, and
@@ -145,7 +148,7 @@ easy to convert to anything else later.
 <details>
 <summary><b>Is this affiliated with Notion?</b></summary>
 <br>
-No. Ownote is an independent open-source project. It uses Notion's public API only to import your own content.
+No. OwnNote is an independent open-source project. It uses Notion's public API only to import your own content.
 </details>
 
 <details>
@@ -158,7 +161,7 @@ talks to <code>api.notion.com</code> using a token you created yourself.
 <details>
 <summary><b>Can I cancel my Notion subscription after importing?</b></summary>
 <br>
-Yes. That's the main reason Ownote exists. Before you cancel, run the importer one last time, open Ownote and
+Yes. That's the main reason OwnNote exists. Before you cancel, run the importer one last time, open OwnNote and
 check your important pages. As a second copy, also use Notion's built-in
 <i>Settings → Export all workspace content → Markdown & CSV</i>.
 </details>
@@ -166,7 +169,7 @@ check your important pages. As a second copy, also use Notion's built-in
 <details>
 <summary><b>Can I use it on several computers?</b></summary>
 <br>
-Ownote is a single-user, single-device app. You can keep the folder in iCloud Drive, Dropbox or a git repo to
+OwnNote is a single-user, single-device app. You can keep the folder in iCloud Drive, Dropbox or a git repo to
 move it between machines. Just don't edit on two computers at the same time.
 </details>
 
@@ -210,7 +213,7 @@ npm install
 npm run build      # outputs to viewer/editor/
 ```
 
-The server and importer are dependency-free Python. Please keep it that way, so anyone can run Ownote with just `python3`.
+The server and importer are dependency-free Python. Please keep it that way, so anyone can run OwnNote with just `python3`.
 
 ## 🙏 Built with
 
@@ -222,11 +225,11 @@ The server and importer are dependency-free Python. Please keep it that way, so 
 
 [MIT](LICENSE). Free for personal and commercial use.
 
-<sub>Notion is a trademark of Notion Labs, Inc. Ownote is not affiliated with, endorsed by, or sponsored by Notion Labs.</sub>
+<sub>Notion is a trademark of Notion Labs, Inc. OwnNote is not affiliated with, endorsed by, or sponsored by Notion Labs.</sub>
 
 <div align="center">
 <br>
 
-**If Ownote saved you a subscription, consider giving it a ⭐. It helps others find it.**
+**If OwnNote saved you a subscription, consider giving it a ⭐. It helps others find it.**
 
 </div>

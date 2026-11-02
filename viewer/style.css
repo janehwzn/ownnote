@@ -28,7 +28,7 @@ a { color: inherit; }
   display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; font-size: 14px;
 }
 .side-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 8px; }
-.brand { font-weight: 600; }
+.brand { font-weight: 600; text-decoration: none; color: var(--text); }
 #toggle-side, #show-side { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 16px; border-radius: 4px; }
 #toggle-side:hover, #show-side:hover { background: var(--hover); }
 #show-side { position: fixed; top: 10px; left: 10px; z-index: 5; }

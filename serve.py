@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Serve Ownote at http://localhost:8765, open it in the browser, and save edits to ./data."""
+"""Serve OwnNote at http://localhost:8765, open it in the browser, and save edits to ./data."""
 import functools
 import http.server
 import json
@@ -271,8 +271,10 @@ class Server(http.server.ThreadingHTTPServer):
 def main():
     global STORE
     print(f"Notes folder: {DATA}")
-    if not (DATA / "index.json").exists():
-        print("No notes yet - starting with an empty workspace.")
+    starter = ROOT / "starter" / "data"
+    if not (DATA / "index.json").exists() and not any(PAGES.glob("*.json")) and starter.exists():
+        shutil.copytree(starter, DATA, dirs_exist_ok=True)
+        print("First run: added a welcome page and a few examples.")
     STORE = Store()
     handler = functools.partial(Handler, directory=str(ROOT))
     try:
@@ -282,7 +284,7 @@ def main():
         webbrowser.open(f"http://localhost:{PORT}/")
         return
     url = f"http://localhost:{PORT}/"
-    print(f"Ownote running at {url}  (Ctrl+C to stop)")
+    print(f"OwnNote running at {url}  (Ctrl+C to stop)")
     if "--no-browser" not in sys.argv:
         threading.Timer(0.5, webbrowser.open, [url]).start()
     try:
