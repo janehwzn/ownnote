@@ -1,0 +1,13 @@
+# Your notes and secrets: never commit these
+data/
+data-*/
+token.txt
+
+# Generated
+*.log
+__pycache__/
+editor/node_modules/
+.DS_Store
+
+# Points the app at your notes folder (personal, machine-specific)
+data-location.txt

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ownote</title>
+<link rel="stylesheet" href="/viewer/editor/editor.css">
+<link rel="stylesheet" href="/viewer/style.css">
+</head>
+<body>
+<aside id="sidebar">
+  <div class="side-head">
+    <span class="brand">Ownote</span>
+    <button id="toggle-side" title="Hide sidebar">«</button>
+  </div>
+  <input id="search" type="search" placeholder="Search all pages…  (⌘K)" autocomplete="off">
+  <div id="results" hidden></div>
+  <nav id="tree"></nav>
+  <div class="side-foot" id="meta"></div>
+</aside>
+<button id="show-side" title="Show sidebar" hidden>»</button>
+<main id="main">
+  <div id="crumbs">
+    <div id="crumb-path"></div>
+    <span id="status" class="status"></span>
+    <div id="page-tools" hidden><button id="menu-btn" class="ghost" title="Page style, width, delete">•••</button></div>
+  </div>
+  <article id="content"><p class="muted">Loading…</p></article>
+</main>
+<script src="/viewer/editor/editor.js"></script>
+<script src="/viewer/app.js"></script>
+</body>
+</html>
