@@ -37,6 +37,18 @@ subscription to read your own notes, on someone else's server, behind a login.
 - 📦 **Your data is just files.** Back it up with Time Machine, Dropbox, a USB stick or git.
 - 🚚 **Bring your Notion history.** Import every page, subpage, database and image in one go.
 
+## 💸 Paying for Notion just to read your own notes?
+
+Notion Plus is **$10/month** and Business is **$20/month**. In 2026 many people's discounts ended at renewal, with
+bills reported going **from $96 to $240 a year**. If Notion is your *personal* notebook, you can keep every page, subpage,
+database and image, and stop paying:
+
+1. **Import** your workspace into OwnNote (one dialog, about 5 minutes of setup)
+2. **Check** your important pages
+3. **Cancel or downgrade** Notion
+
+📖 **[Read the full guide: How to stop paying for Notion without losing a single note →](docs/stop-paying-for-notion.md)**
+
 ## ✨ Features
 
 | | |
@@ -171,6 +183,15 @@ easy to convert to anything else later.
 <summary><b>Is this affiliated with Notion?</b></summary>
 <br>
 No. OwnNote is an independent open-source project. It uses Notion's public API only to import your own content.
+</details>
+
+<details>
+<summary><b>Notion has a free plan. Why would I switch?</b></summary>
+<br>
+If Notion Free works for you, that's great: it's unlimited for individuals. People switch to OwnNote when they want
+files bigger than Free's 5 MB limit, page history longer than 7 days, notes that work fully offline, or simply to own
+their notes as files instead of renting access to them. The <a href="docs/stop-paying-for-notion.md">guide</a> walks
+through both options honestly.
 </details>
 
 <details>
