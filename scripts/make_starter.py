@@ -71,7 +71,7 @@ home = page("Welcome to OwnNote", "👋", day=31, blocks=[
     TODO("Click this page's icon to change it"),
     TODO("Press ⌘K (Ctrl+K) to search everything"),
     TOGGLE("Coming from Notion?", [
-        P(rt("Run "), rt("python3 backup.py", code=True), rt(" to import your whole Notion workspace: pages, subpages, databases and images. See the README for the 5-minute setup.")),
+        P(rt("Click "), rt("⬇ Import from Notion", bold=True), rt(" at the bottom of the sidebar. Upload Notion's export .zip, or connect your account. Your pages, subpages, databases and images come along.")),
     ]),
     P(rt("These example pages are yours to keep, edit or delete (••• → Delete page).", color="gray")),
     H(2, "Examples"),

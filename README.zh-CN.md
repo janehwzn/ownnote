@@ -41,6 +41,7 @@ Notion 很好用。但如果你主要拿它当**个人笔记本**，就等于每
 | ✍️ **Notion 式块编辑器** | `/` 命令菜单、Markdown 快捷输入（`#` `-` `1.` `[]` `>` `---`）、拖拽排序、Tab 缩进 |
 | 🧱 **常用块全都有** | 标题、项目符号、编号列表、待办、折叠列表、引用、标注框、代码、表格、图片、分割线 |
 | 🎨 **丰富的格式** | 粗体、斜体、下划线、删除线、行内代码、文字颜色和背景色、**字号**、对齐、链接 |
+| 🚚 **一键导入 Notion** | 上传 Notion 导出的 .zip，或连接账号完整同步 |
 | 🗂️ **无限层级页面** | 子页面、侧边栏目录树、面包屑导航、emoji 图标 |
 | 🔍 **全文搜索** | ⌘K 搜索所有标题和正文，中文也没问题 |
 | 📊 **数据库** | 导入的 Notion 数据库以表格显示，可以排序和筛选 |
@@ -63,20 +64,27 @@ python3 serve.py
 
 ## 🚚 导入你的 Notion
 
-通过 Notion 官方 API 导入（所有 Notion 套餐都能用，包括免费版），大约 5 分钟搞定：
+点击侧边栏底部的 **⬇ Import from Notion**，两种方式任选：
+
+**方式一：上传 Notion 导出文件（最简单，无需任何设置）**
+
+1. 在 Notion 里打开 **设置 → 导出全部工作区内容**（单个页面：**••• → 导出**）
+2. 格式选 **Markdown & CSV**，打开 **为子页面创建文件夹** 和 **包含私人页面**（或 **包含子页面**）
+3. Notion 会发邮件给你下载链接，把 **.zip 直接拖进 OwnNote**（不用解压）
+
+文字、标题、列表、待办、表格、代码、图片、标注框、子页面和数据库都会导入。Notion 的 Markdown 导出不包含文字颜色等少数样式，想要完整保留请用方式二。
+
+**方式二：连接 Notion 账号（效果最好，可以重复同步）**
 
 1. 打开 **[notion.so/profile/integrations](https://www.notion.so/profile/integrations)** → **New integration**，类型选 **Internal**，只勾选 **Read content**
 2. 在这个 integration 的 **Access** 标签页里选中你所有的顶层页面（子页面会自动包含）
-3. 复制 **Internal Integration Secret**（以 `ntn_` 开头）
-4. 运行导入程序，按提示粘贴：
+3. 把 **Internal Integration Secret**（以 `ntn_` 开头）粘贴到导入窗口里
 
-```bash
-python3 backup.py      # Mac 上也可以双击 “Import from Notion.command”
-```
+约 600 个页面需要 15–20 分钟。勾选 **Remember** 后，之后点 **Sync again** 就能同步 Notion 里的新改动。
 
-约 600 个页面需要 15–20 分钟（Notion 限制每秒约 3 个请求）。中途断了也没关系，再运行一次就会从断点继续。
+**可以放心重复导入**：页面保留 Notion 原来的 ID，不会重复；只更新有改动的页面，**绝不会覆盖你在 OwnNote 里改过的页面**，也不会恢复你在这里删掉的页面。
 
-**可以放心重复导入**：它只会下载 Notion 里有改动的页面，**绝不会覆盖你在 OwnNote 里改过的页面**，也不会恢复你在这里删掉的页面。
+命令行用户：`python3 notion_zip.py 导出文件.zip`（方式一）或 `python3 backup.py`（方式二）。
 
 ## ❓ 常见问题
 

@@ -7,12 +7,15 @@ import os
 import posixpath
 import re
 import shutil
+import subprocess
 import sys
+import tempfile
 import threading
 import time
 import urllib.parse
 import uuid
 import webbrowser
+import zipfile
 from pathlib import Path
 
 from backup import DATA, FILES, PAGES, block_text, icon_of, load_json, page_title, save_json
@@ -173,6 +176,70 @@ def remove_child_block(blocks, pid):
 
 STORE = None
 
+# ---------- importing from Notion (runs in the background; the page polls /api/import/status) ----------
+
+JOB = {"running": False}
+JOB_LOCK = threading.Lock()
+TOKEN_FILE = DATA.parent / "token.txt"
+
+
+def job_progress(line):
+    line = line.rstrip()
+    if not line:
+        return
+    m = re.match(r"\[(\d+)/(\d+)\]\s*(.*)", line)
+    if m:
+        JOB.update(done=int(m.group(1)), total=int(m.group(2)), message=m.group(3))
+    else:
+        JOB["message"] = line
+    JOB["log"] = (JOB.get("log", []) + [line])[-300:]
+
+
+def start_job(kind, work):
+    with JOB_LOCK:
+        if JOB.get("running"):
+            raise RuntimeError("An import is already running.")
+        JOB.clear()
+        JOB.update(running=True, kind=kind, done=0, total=0, message="Starting…", log=[], error=None, result=None)
+
+    def run():
+        try:
+            JOB["result"] = work()
+        except Exception as e:  # shown to the user in the import dialog
+            JOB["error"] = str(e) or e.__class__.__name__
+        finally:
+            JOB["running"] = False
+
+    threading.Thread(target=run, daemon=True).start()
+
+
+def import_zip_job(path):
+    def work():
+        import notion_zip
+        try:
+            return notion_zip.import_zip(path, progress=job_progress)
+        except zipfile.BadZipFile as e:
+            raise RuntimeError("That file isn't a valid .zip. Upload the file Notion gave you, without unzipping it.") from e
+        finally:
+            os.unlink(path)
+    return work
+
+
+def import_api_job(token):
+    def work():
+        env = dict(os.environ, OWNNOTE_DATA=str(DATA), PYTHONUNBUFFERED="1")
+        if token:
+            env["NOTION_TOKEN"] = token
+        proc = subprocess.Popen([sys.executable, "-u", str(ROOT / "backup.py")], env=env, cwd=str(ROOT),
+                                stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        for line in proc.stdout:
+            job_progress(line)
+        if proc.wait() != 0:
+            raise RuntimeError(JOB["log"][-1] if JOB.get("log") else "The import stopped unexpectedly.")
+        m = re.search(r"Done\. (\d+) pages, (\d+) databases", "\n".join(JOB["log"]))
+        return {"pages": int(m.group(1)), "databases": int(m.group(2))} if m else {}
+    return work
+
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *args):
@@ -197,6 +264,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return super().translate_path(path)
 
     def do_GET(self):
+        if self.path.startswith("/api/"):
+            return self.api("GET")
         if self.path in ("/", "/index.html") or self.path.startswith("/?"):
             self.path = "/viewer/index.html"
         return super().do_GET()
@@ -220,6 +289,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if self.headers.get("X-Notion-Local") != "1":  # blocks cross-site form posts
             return self.reply({"error": "forbidden"}, 403)
         try:
+            if parts[:2] == ["api", "import"]:
+                return self.import_api(method, parts[2:])
             with LOCK:
                 STORE.refresh()
                 if parts[:2] == ["api", "pages"] and len(parts) == 2 and method == "POST":
@@ -250,6 +321,45 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return self.reply({"error": "not found"}, 404)
         except Exception as e:
             return self.reply({"error": str(e)}, 500)
+
+    def import_api(self, method, parts):
+        if parts == ["status"] and method == "GET":
+            return self.reply({**JOB, "log": JOB.get("log", [])[-8:], "has_token": TOKEN_FILE.exists()})
+        if parts == ["zip"] and method == "POST":
+            n = int(self.headers.get("Content-Length") or 0)
+            if not n:
+                return self.reply({"error": "Empty upload."}, 400)
+            fd, tmp = tempfile.mkstemp(suffix=".zip")
+            with os.fdopen(fd, "wb") as f:
+                while n > 0:
+                    chunk = self.rfile.read(min(n, 1 << 20))
+                    if not chunk:
+                        break
+                    f.write(chunk)
+                    n -= len(chunk)
+            try:
+                start_job("zip", import_zip_job(tmp))
+            except RuntimeError as e:
+                os.unlink(tmp)
+                return self.reply({"error": str(e)}, 409)
+            return self.reply({"started": True})
+        if parts == ["notion"] and method == "POST":
+            b = json.loads(self.body() or b"{}")
+            token = (b.get("token") or "").strip()
+            if token and not re.fullmatch(r"(ntn_|secret_)[A-Za-z0-9]{20,}", token):
+                return self.reply({"error": "That doesn't look like a Notion secret. It starts with ntn_ (or secret_)."}, 400)
+            if not token and not TOKEN_FILE.exists():
+                return self.reply({"error": "Paste your Notion secret first."}, 400)
+            if token and b.get("remember"):
+                TOKEN_FILE.parent.mkdir(parents=True, exist_ok=True)
+                TOKEN_FILE.write_text(token + "\n")
+                TOKEN_FILE.chmod(0o600)
+            try:
+                start_job("notion", import_api_job(token))
+            except RuntimeError as e:
+                return self.reply({"error": str(e)}, 409)
+            return self.reply({"started": True})
+        return self.reply({"error": "unknown endpoint"}, 404)
 
     def do_POST(self):
         self.api("POST")

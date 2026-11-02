@@ -44,6 +44,7 @@ subscription to read your own notes, on someone else's server, behind a login.
 | ✍️ **Notion-style block editor** | `/` menu, Markdown shortcuts (`#`, `-`, `1.`, `[]`, `>`, `---`), drag-and-drop blocks, Tab to indent |
 | 🧱 **All the everyday blocks** | Headings, bullets, numbered and to-do lists, toggles, quotes, callouts, code, tables, images, dividers |
 | 🎨 **Rich formatting** | Bold, italic, underline, strikethrough, inline code, text and highlight colors, **font sizes**, alignment, links |
+| 🚚 **One-click Notion import** | Upload Notion's export .zip, or connect your account for a full-fidelity copy you can re-sync |
 | 🗂️ **Nested pages** | Unlimited subpages, a sidebar tree, breadcrumbs, emoji icons |
 | 🔍 **Instant full-text search** | Search every page title and paragraph with ⌘K, with highlighted matches |
 | 📊 **Databases** | Imported Notion databases show as sortable, filterable tables |
@@ -79,25 +80,41 @@ Click **＋ New page** and start writing.
 
 ## 🚚 Bring your Notion workspace
 
-OwnNote imports through Notion's official API, which is free on every Notion plan, including Free.
-It takes about 5 minutes to set up:
+Click **⬇ Import from Notion** at the bottom of the sidebar and pick whichever way is easier:
+
+<img src="docs/screenshots/import.png" alt="Import from Notion dialog with two options: upload an export file, or connect your Notion account" width="820">
+
+### Option 1: Upload Notion's export file (easiest, no setup)
+
+1. In Notion, open **Settings → Export all workspace content**. For a single page, use **••• → Export**.
+2. Choose **Markdown & CSV**, and turn on **Create folders for subpages** and **Include private pages** (or **Include subpages**).
+3. Notion emails you a download link. Drop the **.zip** into OwnNote as is, without unzipping it.
+
+Brings over text, headings, lists, to-dos, tables, code, images, callouts, subpages and databases.
+Notion's Markdown export doesn't include text colors or some block styles. Use option 2 if you want those.
+
+### Option 2: Connect your Notion account (best quality, can re-sync)
 
 1. Go to **[notion.so/profile/integrations](https://www.notion.so/profile/integrations)** → **New integration**.
    Choose type **Internal**, give it **Read content** only, and save.
 2. On the integration's **Access** tab, select all your top-level pages. Subpages come along automatically.
-3. Copy the **Internal Integration Secret** (starts with `ntn_`).
-4. Run the importer and paste the secret when asked:
+3. Paste the **Internal Integration Secret** (starts with `ntn_`) into the import dialog.
+
+This uses Notion's official API, which is free on every Notion plan, including Free. It keeps colors, callouts,
+toggles and icons. A workspace with ~600 pages takes around 15–20 minutes, because Notion allows about 3 requests per second.
+Tick **Remember** and you can click **Sync again** any time to pull in what changed.
+
+**Importing again is always safe.** Pages keep their Notion IDs, so nothing gets duplicated. Only pages that changed are
+updated, pages **you've edited in OwnNote are never overwritten**, and pages you deleted don't come back.
+
+<details>
+<summary>Prefer the terminal?</summary>
 
 ```bash
-python3 backup.py            # or double-click "Import from Notion.command" on a Mac
+python3 notion_zip.py ~/Downloads/Export-xxxx.zip   # option 1
+python3 backup.py                                  # option 2 (asks for the secret)
 ```
-
-Everything lands in `data/`: pages, subpages, databases, images and attachments. Notion's API allows about
-3 requests per second, so a workspace with ~600 pages takes around 15–20 minutes. If the import is
-interrupted, run it again and it picks up where it stopped.
-
-**Re-importing is safe.** It only fetches pages that changed in Notion. It **never overwrites pages you've
-edited in OwnNote**, and it never brings back pages you deleted.
+</details>
 
 ## ⌨️ Keyboard shortcuts
 
@@ -122,7 +139,8 @@ ownnote/
 │   ├── trash/             ← deleted pages, recoverable
 │   └── index.json         ← sidebar tree and titles
 ├── serve.py               ← the local app server (Python standard library only)
-├── backup.py              ← the Notion importer (Python standard library only)
+├── backup.py              ← Notion importer, via the API (Python standard library only)
+├── notion_zip.py          ← Notion importer, from an export .zip (Python standard library only)
 ├── viewer/                ← the web app
 ├── starter/               ← welcome page and examples shown on first run
 └── editor/                ← editor source (BlockNote + React)
