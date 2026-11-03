@@ -49,14 +49,14 @@ databases become CSV spreadsheets, and following links between pages is awkward.
 
 ## Step 2: Keep using your notes, for free, on your own computer
 
-[**OwnNote**](https://github.com/janehwzn/ownnote) is a free, open-source app that gives you the Notion
+[**Snugnote**](https://github.com/janehwzn/snugnote) is a free, open-source app that gives you the Notion
 experience on your own computer: the sidebar tree, the `/` block editor, toggles, callouts, tables, emoji icons,
 search and dark mode. It runs offline, with no account and no subscription.
 
 ```bash
-git clone https://github.com/janehwzn/ownnote.git
-cd ownnote
-python3 serve.py          # on a Mac you can also double-click "Open OwnNote.command"
+git clone https://github.com/janehwzn/snugnote.git
+cd snugnote
+python3 serve.py          # on a Mac you can also double-click "Open Snugnote.command"
 ```
 
 Then click **⬇ Import from Notion** in the sidebar and choose either:
@@ -70,7 +70,7 @@ A workspace of ~600 pages imports in about 15–20 minutes over the account conn
 
 ### What makes this different from "just export to Markdown"
 
-| | Notion Markdown export | Obsidian / Markdown apps | **OwnNote** |
+| | Notion Markdown export | Obsidian / Markdown apps | **Snugnote** |
 |---|---|---|---|
 | Looks and works like Notion | ✗ | Partly | **✓** |
 | Nested subpages in a sidebar | Folders | Folders | **✓ Same tree** |
@@ -79,20 +79,20 @@ A workspace of ~600 pages imports in about 15–20 minutes over the account conn
 | Links between pages | Awkward | Mostly work | **✓ Work** |
 | Cost | Free | Free (sync is paid) | **Free** |
 
-*Fair warning:* OwnNote is young. **Databases are read-only for now** (you can edit each row's page, but not add rows or
+*Fair warning:* Snugnote is young. **Databases are read-only for now** (you can edit each row's page, but not add rows or
 change columns), and it's single-device. If you live in complex databases and team workflows, Notion, or a team
-tool, is still the better fit. OwnNote is for **personal notes**.
+tool, is still the better fit. Snugnote is for **personal notes**.
 
 ---
 
 ## Step 3: Before you cancel, a 10-minute checklist
 
-- [ ] Import into OwnNote (or your new app) **while your subscription is still active**
+- [ ] Import into Snugnote (or your new app) **while your subscription is still active**
 - [ ] Open your 10 most important pages and check they look right
-- [ ] Search for a few things you know you wrote ("⌘K" in OwnNote)
+- [ ] Search for a few things you know you wrote ("⌘K" in Snugnote)
 - [ ] Check pages with images and files
 - [ ] Keep the **export .zip from Step 1** somewhere safe as a second copy
-- [ ] Copy your OwnNote notes folder to a backup drive or iCloud Drive
+- [ ] Copy your Snugnote notes folder to a backup drive or iCloud Drive
 - [ ] Now cancel or downgrade: Notion → Settings → Billing
 
 You don't have to delete your Notion account. Downgrading to Free keeps everything there as a third copy.
@@ -104,10 +104,10 @@ You don't have to delete your Notion account. Downgrading to Free keeps everythi
 **Will I lose anything?** Not if you follow the checklist. The account import copies every page, subpage, database
 row, image and attachment, and saves web-hosted covers and images locally too.
 
-**Is my data sent anywhere?** No. OwnNote runs only on your computer (`localhost`). The import talks to Notion's
+**Is my data sent anywhere?** No. Snugnote runs only on your computer (`localhost`). The import talks to Notion's
 official API using a read-only key you create, and nothing else.
 
-**Can I go back to Notion later?** Yes. Your Notion workspace isn't touched by the import, and your OwnNote notes are
+**Can I go back to Notion later?** Yes. Your Notion workspace isn't touched by the import, and your Snugnote notes are
 stored in Notion's own block format (JSON), so they stay easy to convert.
 
 **I'm not technical. Can I do this?** If you can paste three lines into Terminal, yes. On a Mac, after that first
@@ -115,4 +115,4 @@ step it's double-click to open. A no-terminal desktop app is on the roadmap.
 
 ---
 
-*Notion is a trademark of Notion Labs, Inc. OwnNote is an independent open-source project and isn't affiliated with Notion.*
+*Notion is a trademark of Notion Labs, Inc. Snugnote is an independent open-source project and isn't affiliated with Notion.*

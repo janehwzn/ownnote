@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Import a Notion "Markdown & CSV" export (.zip) into OwnNote. No Notion account or token needed.
+"""Import a Notion "Markdown & CSV" export (.zip) into Snugnote. No Notion account or token needed.
 
 In Notion: Settings → Export all workspace content (or ••• on a page → Export)
            Format: Markdown & CSV · Include subpages · Create folders for subpages
 Then:      python3 notion_zip.py ~/Downloads/Export-xxxx.zip
 
 Pages keep their Notion IDs, so importing again (or later using backup.py) updates the same pages
-instead of duplicating them. Pages you've edited in OwnNote are never overwritten.
+instead of duplicating them. Pages you've edited in Snugnote are never overwritten.
 """
 import csv
 import io
@@ -378,7 +378,7 @@ class Importer:
         self.csvs = list(by_stem.values())
         for p in mds + self.csvs:
             title, pid = split_name(posixpath.basename(p))
-            self.ids[p] = pid or str(uuid.uuid5(uuid.NAMESPACE_URL, "ownnote-export:" + p))
+            self.ids[p] = pid or str(uuid.uuid5(uuid.NAMESPACE_URL, "snugnote-export:" + p))
             self.names[p] = title
         for p in self.csvs:
             stem = p[:-8] if p.lower().endswith("_all.csv") else p[:-4]
@@ -466,7 +466,7 @@ class Importer:
                 "properties": props or {"title": {"id": "title", "type": "title", "title": [rt(title)]}}}
 
     def keep_existing(self, pid):
-        """Never overwrite pages edited in OwnNote, or richer copies that came from the Notion API."""
+        """Never overwrite pages edited in Snugnote, or richer copies that came from the Notion API."""
         old = load_json(PAGES / f"{pid}.json")
         if not old:
             return False
@@ -540,7 +540,7 @@ class Importer:
                 self.write_page(p, props=props, db_columns=set(header))
                 row_ids.append(self.ids[p])
             else:
-                rid = str(uuid.uuid5(uuid.NAMESPACE_URL, f"ownnote-row:{path}:{len(row_ids)}:{title}"))
+                rid = str(uuid.uuid5(uuid.NAMESPACE_URL, f"snugnote-row:{path}:{len(row_ids)}:{title}"))
                 self.parents[rid] = (did, "database_id")
                 if not self.keep_existing(rid):
                     save_json(PAGES / f"{rid}.json", {"page": self.page_obj(rid, title, props), "blocks": [], "text": "", "source": "zip"})
@@ -593,5 +593,5 @@ if __name__ == "__main__":
     s = import_zip(sys.argv[1])
     n = lambda k, word: f"{s[k]} {word}{'' if s[k] == 1 else 's'}"
     print(f"Done: {n('pages', 'page')}, {n('databases', 'database')} and {n('files', 'file')} imported into {DATA}"
-          + (f"; kept {n('skipped_edited', 'page')} you edited in OwnNote" if s["skipped_edited"] else "")
+          + (f"; kept {n('skipped_edited', 'page')} you edited in Snugnote" if s["skipped_edited"] else "")
           + (f"; kept {n('skipped_existing', 'page')} already imported from your Notion account" if s["skipped_existing"] else ""))

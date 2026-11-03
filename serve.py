@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Serve OwnNote at http://localhost:8765, open it in the browser, and save edits to ./data."""
+"""Serve Snugnote at http://localhost:8765, open it in the browser, and save edits to ./data."""
 import functools
 import http.server
 import json
@@ -227,7 +227,7 @@ def import_zip_job(path):
 
 def import_api_job(token):
     def work():
-        env = dict(os.environ, OWNNOTE_DATA=str(DATA), PYTHONUNBUFFERED="1")
+        env = dict(os.environ, SNUGNOTE_DATA=str(DATA), PYTHONUNBUFFERED="1")
         if token:
             env["NOTION_TOKEN"] = token
         proc = subprocess.Popen([sys.executable, "-u", str(ROOT / "backup.py")], env=env, cwd=str(ROOT),
@@ -394,7 +394,7 @@ def main():
         webbrowser.open(f"http://localhost:{PORT}/")
         return
     url = f"http://localhost:{PORT}/"
-    print(f"OwnNote running at {url}  (Ctrl+C to stop)")
+    print(f"Snugnote running at {url}  (Ctrl+C to stop)")
     if "--no-browser" not in sys.argv:
         threading.Timer(0.5, webbrowser.open, [url]).start()
     try:

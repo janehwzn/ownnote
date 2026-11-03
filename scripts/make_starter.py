@@ -62,7 +62,7 @@ def page(title, emoji, parent=None, blocks=(), day=1, props=None, parent_db=None
     return pid
 
 
-home = page("Welcome to OwnNote", "👋", day=31, blocks=[
+home = page("Welcome to Snugnote", "👋", day=31, blocks=[
     CALLOUT("🏡", rt("This is "), rt("your", bold=True), rt(" workspace. Everything lives in a folder on your computer: no account, no subscription, works offline.")),
     H(2, "Try these"),
     TODO("Type / on an empty line to add a heading, list, quote, table…"),

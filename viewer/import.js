@@ -11,7 +11,7 @@
       <div class="modal" role="dialog" aria-label="Import from Notion">
         <button class="ghost modal-x" title="Close">✕</button>
         <h2>Import from Notion</h2>
-        <p class="muted">Bring your pages, subpages, databases and images into OwnNote. Pick whichever is easier for you.</p>
+        <p class="muted">Bring your pages, subpages, databases and images into Snugnote. Pick whichever is easier for you.</p>
         <div class="choices">
           <section class="choice">
             <div class="choice-head"><span class="choice-icon">📦</span><div><b>Upload an export file</b><div class="badge">Easiest · no setup</div></div></div>
@@ -42,7 +42,7 @@
               <button class="btn resync" hidden>Sync again with saved secret</button>
             </div>
             <p class="fine">Keeps colors, callouts, toggles and icons. Re-syncing only fetches pages that changed,
-              and it never overwrites pages you've edited in OwnNote. The secret is read-only and stays on this computer.</p>
+              and it never overwrites pages you've edited in Snugnote. The secret is read-only and stays on this computer.</p>
           </section>
         </div>
         <div class="import-progress" hidden>
@@ -124,11 +124,11 @@
       m.querySelector(".import-progress").innerHTML = `
         <div class="done-big">✅</div>
         <p><b>Imported ${plural(r.pages, "page")}${r.databases ? ` and ${plural(r.databases, "database")}` : ""}.</b></p>
-        ${r.skipped_edited ? `<p class="muted">Kept ${plural(r.skipped_edited, "page")} you'd edited in OwnNote as they are.</p>` : ""}
+        ${r.skipped_edited ? `<p class="muted">Kept ${plural(r.skipped_edited, "page")} you'd edited in Snugnote as they are.</p>` : ""}
         ${r.skipped_existing ? `<p class="muted">Kept ${plural(r.skipped_existing, "page")} already imported from your Notion account (that copy has more detail).</p>` : ""}
         <button class="btn primary open-pages">Open my pages</button>
-        ${askForStar() ? `<p class="star-ask">If OwnNote saved you a subscription, a
-          <a href="https://github.com/janehwzn/ownnote" target="_blank" rel="noopener">⭐ on GitHub</a>
+        ${askForStar() ? `<p class="star-ask">If Snugnote saved you a subscription, a
+          <a href="https://github.com/janehwzn/snugnote" target="_blank" rel="noopener">⭐ on GitHub</a>
           helps other people find it. Thank you!</p>` : ""}`;
       m.querySelector(".open-pages").onclick = () => location.reload();
     }
@@ -143,8 +143,8 @@
   // Ask once, ever: right after a successful import, never as a pop-up.
   function askForStar() {
     try {
-      if (localStorage.getItem("ownnote:star-asked")) return false;
-      localStorage.setItem("ownnote:star-asked", "1");
+      if (localStorage.getItem("snugnote:star-asked")) return false;
+      localStorage.setItem("snugnote:star-asked", "1");
       return true;
     } catch {
       return false;

@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📝 OwnNote
+# 📝 Snugnote
 
 ### Your own Notion-style workspace. Free forever, offline, and on your computer.
 
@@ -18,18 +18,18 @@ No account. No cloud. No lock-in. Just a folder of your notes.
 
 <br>
 
-<img src="docs/demo.gif" alt="OwnNote demo: creating a page, adding headings, bullets, to-dos and a callout, changing font size and color, picking an emoji icon, and searching" width="900">
+<img src="docs/demo.gif" alt="Snugnote demo: creating a page, adding headings, bullets, to-dos and a callout, changing font size and color, picking an emoji icon, and searching" width="900">
 
 </div>
 
 ---
 
-## 💡 Why OwnNote?
+## 💡 Why Snugnote?
 
 Notion is wonderful, but if you mostly use it as a **personal notebook**, you end up paying a monthly
 subscription to read your own notes, on someone else's server, behind a login.
 
-**OwnNote is the personal-notebook part of Notion, running on your own computer:**
+**Snugnote is the personal-notebook part of Notion, running on your own computer:**
 
 - 🆓 **Free forever.** No plans, no seat limits, no upgrade prompts.
 - 🔒 **Private by default.** Your notes never leave your machine. No telemetry, no account.
@@ -43,7 +43,7 @@ Notion Plus is **$10/month** and Business is **$20/month**. In 2026 many people'
 bills reported going **from $96 to $240 a year**. If Notion is your *personal* notebook, you can keep every page, subpage,
 database and image, and stop paying:
 
-1. **Import** your workspace into OwnNote (one dialog, about 5 minutes of setup)
+1. **Import** your workspace into Snugnote (one dialog, about 5 minutes of setup)
 2. **Check** your important pages
 3. **Cancel or downgrade** Notion
 
@@ -80,15 +80,15 @@ database and image, and stop paying:
 You need **Python 3.8+**, which comes with macOS. Nothing else to install.
 
 ```bash
-git clone https://github.com/janehwzn/ownnote.git
-cd ownnote
+git clone https://github.com/janehwzn/snugnote.git
+cd snugnote
 python3 serve.py
 ```
 
 Your browser opens at **http://localhost:8765** with a welcome page and a few example pages to play with.
 Click **＋ New page** and start writing.
 
-> **On a Mac?** Just double-click **`Open OwnNote.command`** in Finder.
+> **On a Mac?** Just double-click **`Open Snugnote.command`** in Finder.
 
 ## 🚚 Bring your Notion workspace
 
@@ -100,7 +100,7 @@ Click **⬇ Import from Notion** at the bottom of the sidebar and pick whichever
 
 1. In Notion, open **Settings → Export all workspace content**. For a single page, use **••• → Export**.
 2. Choose **Markdown & CSV**, and turn on **Create folders for subpages** and **Include private pages** (or **Include subpages**).
-3. Notion emails you a download link. Drop the **.zip** into OwnNote as is, without unzipping it.
+3. Notion emails you a download link. Drop the **.zip** into Snugnote as is, without unzipping it.
 
 Brings over text, headings, lists, to-dos, tables, code, images, callouts, subpages and databases.
 Notion's Markdown export doesn't include text colors or some block styles. Use option 2 if you want those.
@@ -117,7 +117,7 @@ toggles and icons. A workspace with ~600 pages takes around 15–20 minutes, bec
 Tick **Remember** and you can click **Sync again** any time to pull in what changed.
 
 **Importing again is always safe.** Pages keep their Notion IDs, so nothing gets duplicated. Only pages that changed are
-updated, pages **you've edited in OwnNote are never overwritten**, and pages you deleted don't come back.
+updated, pages **you've edited in Snugnote are never overwritten**, and pages you deleted don't come back.
 
 <details>
 <summary>Prefer the terminal?</summary>
@@ -147,7 +147,7 @@ for notes you imported with an older version.
 ## 🗃️ Where your data lives
 
 ```
-ownnote/
+snugnote/
 ├── data/                  ← all your notes (back this folder up!)
 │   ├── pages/<id>.json    ← one file per page
 │   ├── databases/         ← imported Notion databases
@@ -164,14 +164,14 @@ ownnote/
 
 ### Keep your notes in a separate folder (recommended)
 
-By default notes go in `ownnote/data/`. To keep them apart from the app (for example in iCloud Drive or a
+By default notes go in `snugnote/data/`. To keep them apart from the app (for example in iCloud Drive or a
 backup folder), put the folder path in a file called `data-location.txt` next to `serve.py`:
 
 ```bash
 echo "$HOME/Documents/My Notes/data" > data-location.txt
 ```
 
-You can also set the `OWNNOTE_DATA` environment variable. Your Notion token is then kept next to that folder
+You can also set the `SNUGNOTE_DATA` environment variable. Your Notion token is then kept next to that folder
 (`My Notes/token.txt`), never inside the app folder, and never served by the app.
 
 Pages are stored in **Notion's own block JSON format**, so your data stays readable, scriptable, and
@@ -182,13 +182,13 @@ easy to convert to anything else later.
 <details>
 <summary><b>Is this affiliated with Notion?</b></summary>
 <br>
-No. OwnNote is an independent open-source project. It uses Notion's public API only to import your own content.
+No. Snugnote is an independent open-source project. It uses Notion's public API only to import your own content.
 </details>
 
 <details>
 <summary><b>Notion has a free plan. Why would I switch?</b></summary>
 <br>
-If Notion Free works for you, that's great: it's unlimited for individuals. People switch to OwnNote when they want
+If Notion Free works for you, that's great: it's unlimited for individuals. People switch to Snugnote when they want
 files bigger than Free's 5 MB limit, page history longer than 7 days, notes that work fully offline, or simply to own
 their notes as files instead of renting access to them. The <a href="docs/stop-paying-for-notion.md">guide</a> walks
 through both options honestly.
@@ -204,7 +204,7 @@ talks to <code>api.notion.com</code> using a token you created yourself.
 <details>
 <summary><b>Can I cancel my Notion subscription after importing?</b></summary>
 <br>
-Yes. That's the main reason OwnNote exists. Before you cancel, run the importer one last time, open OwnNote and
+Yes. That's the main reason Snugnote exists. Before you cancel, run the importer one last time, open Snugnote and
 check your important pages. As a second copy, also use Notion's built-in
 <i>Settings → Export all workspace content → Markdown & CSV</i>.
 </details>
@@ -212,7 +212,7 @@ check your important pages. As a second copy, also use Notion's built-in
 <details>
 <summary><b>Can I use it on several computers?</b></summary>
 <br>
-OwnNote is a single-user, single-device app. You can keep the folder in iCloud Drive, Dropbox or a git repo to
+Snugnote is a single-user, single-device app. You can keep the folder in iCloud Drive, Dropbox or a git repo to
 move it between machines. Just don't edit on two computers at the same time.
 </details>
 
@@ -256,7 +256,7 @@ npm install
 npm run build      # outputs to viewer/editor/
 ```
 
-The server and importer are dependency-free Python. Please keep it that way, so anyone can run OwnNote with just `python3`.
+The server and importer are dependency-free Python. Please keep it that way, so anyone can run Snugnote with just `python3`.
 
 ## 🙏 Built with
 
@@ -268,11 +268,11 @@ The server and importer are dependency-free Python. Please keep it that way, so 
 
 [MIT](LICENSE). Free for personal and commercial use.
 
-<sub>Notion is a trademark of Notion Labs, Inc. OwnNote is not affiliated with, endorsed by, or sponsored by Notion Labs.</sub>
+<sub>Notion is a trademark of Notion Labs, Inc. Snugnote is not affiliated with, endorsed by, or sponsored by Notion Labs.</sub>
 
 <div align="center">
 <br>
 
-**If OwnNote saved you a subscription, consider giving it a ⭐. It helps others find it.**
+**If Snugnote saved you a subscription, consider giving it a ⭐. It helps others find it.**
 
 </div>

@@ -27,8 +27,8 @@ ROOT = Path(__file__).resolve().parent
 
 
 def data_dir():
-    """Where notes live: $OWNNOTE_DATA, else the path in data-location.txt, else ./data."""
-    env = os.environ.get("OWNNOTE_DATA", "").strip()
+    """Where notes live: $SNUGNOTE_DATA, else the path in data-location.txt, else ./data."""
+    env = os.environ.get("SNUGNOTE_DATA", "").strip()
     if env:
         return Path(env).expanduser().resolve()
     loc = ROOT / "data-location.txt"
@@ -137,7 +137,7 @@ def download_file(url, owner_id):
         dest = dest_dir / f"{stem}-{i}{ext}"
         i += 1
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (OwnNote; +https://github.com/janehwzn/ownnote)"})
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Snugnote; +https://github.com/janehwzn/snugnote)"})
         with urllib.request.urlopen(req, timeout=120) as r:
             body = r.read()
         if not os.path.splitext(name)[1]:

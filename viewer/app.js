@@ -518,16 +518,16 @@ function crumbs(id) {
   let cur = id, guard = 0;
   while (cur && items[cur] && guard++ < 50) { chain.unshift(cur); cur = items[cur].parent; }
   $("#crumb-path").innerHTML = chain.map((c) => `<a href="#/${c}">${items[c].icon ? iconHTML(items[c].icon) + " " : ""}${esc(items[c].title)}</a>`).join(" / ");
-  document.title = (items[id]?.title || "OwnNote") + " · OwnNote";
+  document.title = (items[id]?.title || "Snugnote") + " · Snugnote";
 }
 
 function rememberPage(id) {
-  try { localStorage.setItem("ownnote:last", id); } catch { /* storage unavailable */ }
+  try { localStorage.setItem("snugnote:last", id); } catch { /* storage unavailable */ }
 }
 
 function startPage() {
   let last = null;
-  try { last = localStorage.getItem("ownnote:last"); } catch { /* storage unavailable */ }
+  try { last = localStorage.getItem("snugnote:last"); } catch { /* storage unavailable */ }
   if (last && items[last]) return last;
   const pages = Object.values(items).filter((i) => i.kind === "page");
   pages.sort((a, b) => (b.edited || "").localeCompare(a.edited || ""));
@@ -566,7 +566,7 @@ async function route() {
 
 function showHome() {
   $("#crumb-path").innerHTML = "";
-  document.title = "OwnNote";
+  document.title = "Snugnote";
   $("#content").classList.remove("wide");
   applyFormat({});
   const recent = Object.values(items).filter((i) => i.kind === "page").sort((a, b) => (b.edited || "").localeCompare(a.edited || "")).slice(0, 25);
