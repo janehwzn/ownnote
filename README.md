@@ -126,6 +126,8 @@ updated, pages **you've edited in Snugnote are never overwritten**, and pages yo
 python3 notion_zip.py ~/Downloads/Export-xxxx.zip   # option 1
 python3 backup.py                                  # option 2 (asks for the secret)
 python3 backup.py --save-web-images                # save web-hosted covers/images so everything works offline
+python3 export_md.py                               # export all pages to ./markdown-export/
+python3 export_md.py ~/Documents/snugnote-export    # choose an output folder
 ```
 
 Imports through your account save web-hosted images, covers and icons locally automatically. The last command does the same
@@ -239,8 +241,9 @@ platforms are welcome.
 - [x] Import an entire Notion workspace (pages, databases, images)
 - [x] Block editor with slash menu, Markdown shortcuts and a formatting toolbar
 - [x] Subpages, icons, page styles, full-text search, dark mode
+- [x] Export pages as Markdown (current page from •••, or the whole workspace with `python3 export_md.py`)
 - [ ] Editable databases (add rows, edit properties, board view)
-- [ ] Export to Markdown / HTML
+- [ ] Export to HTML
 - [ ] Page covers, column layouts, @-mentions
 - [ ] Packaged desktop app (no terminal needed)
 

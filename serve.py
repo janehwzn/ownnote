@@ -296,6 +296,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 if parts[:2] == ["api", "pages"] and len(parts) == 2 and method == "POST":
                     b = json.loads(self.body() or b"{}")
                     return self.reply(STORE.create(b.get("parent"), b.get("title", ""), b.get("link", True)))
+                if parts[:2] == ["api", "pages"] and len(parts) == 4 and parts[3] == "markdown" and method == "GET":
+                    from export_md import page_markdown
+                    pid = parts[2]
+                    if pid not in STORE.items or STORE.items[pid].get("kind") != "page":
+                        return self.reply({"error": "not found"}, 404)
+                    return self.reply({"markdown": page_markdown(STORE.load_page(pid))})
                 if parts[:2] == ["api", "pages"] and len(parts) == 3:
                     pid = parts[2]
                     if pid not in STORE.items:
