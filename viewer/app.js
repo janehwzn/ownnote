@@ -611,6 +611,7 @@ $("#menu-btn").onclick = (e) => {
     <div class="fonts">${Object.entries(FONTS).map(([k, v]) => `<button data-font="${k}" class="${(f.font || "default") === k ? "on" : ""}"><span class="ag font-${k}">Ag</span>${v}</button>`).join("")}</div>
     <label class="pop-row"><span>Small text</span><input type="checkbox" data-opt="small" ${f.small ? "checked" : ""}></label>
     <label class="pop-row"><span>Full width</span><input type="checkbox" data-opt="full" ${f.full ? "checked" : ""}></label>
+    <button class="pop-row" data-act="export">Export as Markdown</button>
     <hr><button class="pop-row danger" data-act="delete">🗑 Delete page</button>`);
   const set = async (patch) => {
     Object.assign(f, patch);
@@ -621,6 +622,27 @@ $("#menu-btn").onclick = (e) => {
   };
   el.querySelectorAll("[data-font]").forEach((b) => (b.onclick = () => set({ font: b.dataset.font })));
   el.querySelectorAll("[data-opt]").forEach((cb) => (cb.onchange = () => set({ [cb.dataset.opt]: cb.checked })));
+  el.querySelector("[data-act=export]").onclick = async () => {
+    try {
+      const response = await fetch(`/api/pages/${encodeURIComponent(id)}/markdown`, { headers: { "X-Notion-Local": "1" } });
+      if (!response.ok) {
+        let detail = `${response.status} ${response.statusText}`;
+        try { detail = (await response.json()).error || detail; } catch {}
+        throw new Error(detail);
+      }
+      const { markdown } = await response.json();
+      const url = URL.createObjectURL(new Blob([markdown], { type: "text/markdown;charset=utf-8" }));
+      const link = document.createElement("a");
+      const title = (items[id]?.title || "Untitled").replace(/[<>:"/\\|?*\x00-\x1f]/g, "_").trim() || "Untitled";
+      link.href = url;
+      link.download = `${title}.md`;
+      link.click();
+      URL.revokeObjectURL(url);
+      el.remove();
+    } catch (error) {
+      alert(`Could not export this page: ${error.message}`);
+    }
+  };
   el.querySelector("[data-act=delete]").onclick = () => { el.remove(); deletePage(id); };
 };
 
